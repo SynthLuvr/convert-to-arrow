@@ -1,8 +1,7 @@
 /**
  * A list of function declarations to test the conversion by convert-to-arrow codemod
  */
-
-function add(a: number, b: number): number {
+const add = (a: number, b: number): number => {
   return a + b
 }
 
@@ -10,31 +9,35 @@ function add(a: number, b: number): number {
  * Returns a random integer in [0, max)
  * @param max – exclusive upper bound
  */
-export function randInt(max: number): number {
+export const randInt = (max: number): number => {
   return Math.floor(Math.random() * max)
 }
 
-export default async function fetchJson(url: string) {
+const fetchJson = async (url: string) => {
   const res = await fetch(url)
   return (await res.json()) as unknown
 }
+export default fetchJson
 
-export function pickFirst<
+export const pickFirst = <
   // tuple of keys
   K extends readonly string[],
   // object type
   O extends Record<K[number], unknown>,
->(keyOrder: K, obj: O): O[K[number]] {
+>(
+  keyOrder: K,
+  obj: O,
+): O[K[number]] => {
   for (const k of keyOrder) if (k in obj) return obj[k as K[number]]
   throw new Error("no key found")
 }
 
-function tupleToObject<const T extends readonly string[]>(t: T): { [K in T[number]]: true } {
+const tupleToObject = <const T extends readonly string[]>(t: T): { [K in T[number]]: true } => {
   // eslint-disable-next-line prefer-object-spread
   return Object.assign({}, ...t.map((k) => ({ [k]: true })))
 }
 
-export function joinLines(prefix: string | undefined = ">", ...lines: string[]): string {
+export const joinLines = (prefix: string | undefined = ">", ...lines: string[]): string => {
   return lines.map((l) => `${prefix} ${l}`).join("\n")
 }
 
@@ -45,16 +48,16 @@ export function toDate(x: number | string): Date {
 }
 
 type Parser<T> = { parse(input: unknown): T }
-export async function loadParsed<T>(url: string, parser: Parser<T>): Promise<T> {
+export const loadParsed = async <T>(url: string, parser: Parser<T>): Promise<T> => {
   const data = await (await fetch(url)).json()
   return parser.parse(data)
 }
 
-export function isStringArray(arr: unknown[]): arr is string[] {
+export const isStringArray = (arr: unknown[]): arr is string[] => {
   return arr.every((x) => typeof x === "string")
 }
 
-export function assertNever(x: never): never {
+export const assertNever = (x: never): never => {
   throw new Error(`Unexpected value: ${String(x)}`)
 }
 
@@ -81,7 +84,7 @@ function assertConfigFullyDefined(config: InitConf): asserts config is Config {
   }
 }
 
-export function getConfig(): Config {
+export const getConfig = (): Config => {
   if (!_config) {
     assertConfigFullyDefined(_initConf)
     _config = _initConf
@@ -114,7 +117,7 @@ class Timer {
   }
 }
 
-async function onGetJobs(): Promise<{ items: unknown[]; totalCount: number }> {
+export const onGetJobs = async (): Promise<{ items: unknown[]; totalCount: number }> => {
   // do stuff here
 
   return {
@@ -132,7 +135,7 @@ export default writeFileAtomic
 */
 
 /* ouch, not working either */
-export function unwrapCallRows<T>(rows: unknown): T[] {
+export const unwrapCallRows = <T>(rows: unknown): T[] => {
   const r = rows as unknown[]
   if (Array.isArray(r) && Array.isArray(r[0])) return r[0] as T[]
   return rows as T[] // some procs/drivers already flatten
